@@ -13,6 +13,7 @@
             width: 100%;
             height: 100%;
             background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
         }
 
         iframe {
@@ -21,26 +22,59 @@
             height: 100%;
         }
 
+        /* Loader Popup Mini */
+        .loader-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px 30px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .loader-popup .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        .loader-popup .loading-text {
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Tombol Print Besar + Smooth */
         .fab {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 50%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            font-size: 30px;
+            font-size: 40px;
             text-align: center;
-            line-height: 60px;
+            line-height: 80px;
             cursor: pointer;
             z-index: 9999;
 
             opacity: 0;
             transform: translateY(100px);
-            transition: transform 0.5s ease, opacity 0.5s ease, background-color 0.3s ease;
+            transition: transform 1s ease, opacity 1s ease, background-color 0.3s ease;
         }
 
         .fab.show {
@@ -51,6 +85,7 @@
         .fab:hover {
             background-color: #45a049;
             transform: translateY(0) scale(1.1);
+            transition: transform 0.5s ease, background-color 0.3s ease;
         }
 
         @keyframes spin {
@@ -58,46 +93,31 @@
             100% { transform: rotate(360deg); }
         }
 
-        .spin svg {
-            animation: spin 1s linear infinite;
+        .fab.spin svg {
+            animation: spin 1.2s linear infinite;
         }
 
         .fab svg {
             vertical-align: middle;
-        }
-
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #4CAF50, #2196F3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-        }
-
-        .loader-logo {
-            width: 100px;
-            height: 100px;
-            animation: spin 1s linear infinite;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="loader" class="loader-overlay">
-        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiibViPYKYXdHuvx-DmyCm_IKRkbjX1UBdYgR7PHsWGhdMESnh9_YorRYXec5QPRhSzGDR_xbqbOJI48MEagTnfRmNlM7cDrQeo8l4yd8D3At0f-7TKa3FB-akVsj3Zmz8vVzaEVsIm9LYv8zd2GK85LS64Hz9wI9LFJRPas4A1N404vH8H4up6olL8l-z_/s1280/1000340306.jpg" alt="Loading..." class="loader-logo">
+    <!-- Loader Mini Popup -->
+    <div id="loader" class="loader-popup">
+        <div class="spinner"></div>
+        <div class="loading-text">Sedang memuat...</div>
     </div>
 
+    <!-- Iframe Fullscreen -->
     <iframe id="notaFrame"></iframe>
 
-    <button id="downloadBtn" class="fab" title="Download PDF" disabled>
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 20h14v-2H5v2zM12 2v12l4-4 1.41 1.41L12 17.83l-5.41-5.42L8 10l4 4V2h0z"/>
+    <!-- Tombol Print -->
+    <button id="printBtn" class="fab" title="Cetak Nota" disabled>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 8H5c-1.1 0-2 .9-2 2v6h4v4h10v-4h4v-6c0-1.1-.9-2-2-2zm-3 10H8v-4h8v4zm3-8H5V6h14v4z"/>
         </svg>
     </button>
 
@@ -112,34 +132,29 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data[notaId]) {
-                        const fileUrl = data[notaId].replace('/view', '/preview');
-                
-
+                        let fileUrl = data[notaId].replace('/view', '/preview');
+                        console.log('Link file:', fileUrl);
 
                         const notaFrame = document.getElementById('notaFrame');
-                        const downloadBtn = document.getElementById('downloadBtn');
+                        const printBtn = document.getElementById('printBtn');
 
-                        downloadBtn.disabled = true;
-                        downloadBtn.classList.add('show');
-                        downloadBtn.classList.add('spin');
+                        printBtn.disabled = true;
+                        printBtn.classList.add('show');
+                        printBtn.classList.add('spin');
 
                         notaFrame.src = fileUrl;
 
                         notaFrame.onload = () => {
-                            downloadBtn.classList.remove('spin');
-                            downloadBtn.disabled = false;
+                            printBtn.classList.remove('spin');
+                            printBtn.disabled = false;
 
                             const loader = document.getElementById('loader');
                             loader.style.display = 'none';
                         };
 
-                        downloadBtn.onclick = () => {
-                            const a = document.createElement('a');
-                            a.href = fileUrl;
-                            a.download = notaId + '.pdf';
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
+                        printBtn.onclick = () => {
+                            notaFrame.contentWindow.focus();
+                            notaFrame.contentWindow.print();
                         };
                     } else {
                         alert('Nota tidak ditemukan.');
