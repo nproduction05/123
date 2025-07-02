@@ -113,7 +113,7 @@
                 .then(data => {
                     if (data[notaId]) {
                         const fileUrl = data[notaId];
-                        fileUrl = fileUrl.replace('/view', '').replace('file/d/', 'uc?export=download&id=');
+                        fileUrl = fileUrl.replace('/view', '/preview');
                         console.log('Link file:', fileUrl);
 
 
