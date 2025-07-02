@@ -152,21 +152,23 @@
 
                         notaFrame.src = fileUrl;
 
-                        notaFrame.onload = () => {
-                            printBtn.classList.remove('spin');
-                            printBtn.disabled = false;
+                        // Loader hilang setelah 1.5 detik
+                setTimeout(() => {
+                    const loader = document.getElementById('loader');
+                    loader.style.display = 'none';
 
-                            const loader = document.getElementById('loader');
-                            loader.style.display = 'none';
-                        };
+                    printBtn.classList.remove('spin');
+                    printBtn.disabled = false;
 
-                        printBtn.onclick = () => {
-                            notaFrame.contentWindow.focus();
-                            notaFrame.contentWindow.print();
-                        };
-                    } else {
-                        alert('Nota tidak ditemukan.');
-                    }
+                }, 1500); // Durasi hilangnya loader
+
+                printBtn.onclick = () => {
+                    notaFrame.contentWindow.focus();
+                    notaFrame.contentWindow.print();
+                };
+            } else {
+                alert('Nota tidak ditemukan.');
+            }
                 })
                 .catch(error => {
                     console.error('Error loading JSON:', error);
