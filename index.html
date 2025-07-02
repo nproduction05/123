@@ -113,6 +113,8 @@
                 .then(data => {
                     if (data[notaId]) {
                         const fileUrl = data[notaId];
+                        fileUrl = fileUrl.replace('/view', '').replace('file/d/', 'uc?export=download&id=');
+
 
                         const notaFrame = document.getElementById('notaFrame');
                         const downloadBtn = document.getElementById('downloadBtn');
