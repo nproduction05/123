@@ -112,9 +112,8 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data[notaId]) {
-                        const fileUrl = data[notaId];
-                        fileUrl = fileUrl.replace('/view', '/preview');
-                        console.log('Link file:', fileUrl);
+                        const fileUrl = data[notaId].replace('/view', '/preview');
+                
 
 
                         const notaFrame = document.getElementById('notaFrame');
