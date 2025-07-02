@@ -111,8 +111,8 @@
             fetch(webAppUrl)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success && data.data[notaId]) {
-                        const fileUrl = data.data[notaId];
+                    if (data[notaId]) {
+                        const fileUrl = data[notaId];
 
                         const notaFrame = document.getElementById('notaFrame');
                         const downloadBtn = document.getElementById('downloadBtn');
